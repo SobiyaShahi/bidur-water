@@ -1,0 +1,9 @@
+{
+  "scenario_id": "demo-tank",
+  "timestep_seconds": 60,
+  "steps": 60,
+  "capacity_liters": 1000,
+  "initial_level_liters": 400,
+  "inflow_liters_per_second": 0.2,
+  "outflow_liters_per_second": 0.15
+}

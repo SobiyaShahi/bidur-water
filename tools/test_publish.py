@@ -1,0 +1,1 @@
+"""Ritik integration handoff: broker publish smoke test is not implemented."""

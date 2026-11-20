@@ -1,0 +1,1 @@
+"""Ritik integration handoff: bounded telemetry buffering is not implemented."""

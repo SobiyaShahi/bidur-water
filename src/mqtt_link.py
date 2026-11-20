@@ -1,0 +1,1 @@
+"""Ritik integration handoff: MQTT transport is not implemented."""

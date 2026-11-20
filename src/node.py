@@ -1,0 +1,1 @@
+"""Ritik integration handoff: physical node behavior is not implemented."""
