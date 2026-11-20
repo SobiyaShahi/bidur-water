@@ -14,7 +14,7 @@ import zlib
 
 # --- physical constants (justify these in the paper) ---
 PEAK_REF_NTU = 600.0        # peak that counts as strength 1.0
-K_TDS = 350.0               # ppm added at full strength (cite sewage TDS source!)
+K_TDS = 450.0             # ppm added at full strength (cite sewage TDS source!)
 DPH_MAX = 1.0               # max pH drop below baseline
 B_PH = 2.5                  # pH saturation rate: drop = DPH_MAX*(1-exp(-B*I))
 RISE_MODEL_S = 12 * 60      # turbidity rise time (model seconds)
