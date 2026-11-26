@@ -12,6 +12,7 @@ from src.logutil import log
 
 EVENT_TYPES = {"rain_event", "supply_interruption", "network_outage", "network_restore"}
 DEFAULT_PEAK_NTU = 600
+NODE_PEAKS = {"node-01": 600, "node-02": 150, "node-03": 35}
 HELP = ("keys: e=rain event (all nodes)  1/2/3=rain on that node  i=supply interruption  "
         "o=toggle network outage  s=status  h=help  q=quit")
 
@@ -133,10 +134,13 @@ class ScenarioRunner:
             except EOFError:
                 return
             if k == "e":
-                self.router.dispatch({"type": "rain_event", "node": "all", "peak_ntu": DEFAULT_PEAK_NTU})
+                for n in nodes:
+                    self.router.dispatch({"type": "rain_event", "node": n,
+                                          "peak_ntu": NODE_PEAKS.get(n, DEFAULT_PEAK_NTU)})
             elif k in "123" and k and int(k) <= len(nodes):
-                self.router.dispatch({"type": "rain_event", "node": nodes[int(k) - 1],
-                                      "peak_ntu": DEFAULT_PEAK_NTU})
+                n = nodes[int(k) - 1]
+                self.router.dispatch({"type": "rain_event", "node": n,
+                                      "peak_ntu": NODE_PEAKS.get(n, DEFAULT_PEAK_NTU)})
             elif k == "i":
                 self.router.dispatch({"type": "supply_interruption",
                                       "node": nodes[1] if len(nodes) > 1 else nodes[0],

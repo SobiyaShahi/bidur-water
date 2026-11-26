@@ -1,0 +1,8 @@
+{
+  "time_scale": 30, "sample_interval_s": 2, "start_hour": 8,
+  "events": [
+    {"at_s": 10, "node": "node-01", "type": "rain_event", "peak_ntu": 600},
+    {"at_s": 15, "node": "node-02", "type": "rain_event", "peak_ntu": 150},
+    {"at_s": 20, "node": "node-03", "type": "rain_event", "peak_ntu": 35}
+  ]
+}

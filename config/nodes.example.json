@@ -3,10 +3,10 @@
   "port": 8883,
   "nodes": [
     {"id": "node-01", "name": "Trishuli river intake", "latitude": 27.9120, "longitude": 85.1480,
-     "token": "PASTE_TOKEN_HERE", "db_file": "node-01.db"},
+     "token_env": "THINGSBOARD_NODE_01_TOKEN", "db_file": "node-01.db"},
     {"id": "node-02", "name": "Bidur middle reservoir", "latitude": 27.9105, "longitude": 85.1600,
-     "token": "PASTE_TOKEN_HERE", "db_file": "node-02.db"},
+     "token_env": "THINGSBOARD_NODE_02_TOKEN", "db_file": "node-02.db"},
     {"id": "node-03", "name": "Public tap stand A", "latitude": 27.9070, "longitude": 85.1650,
-     "token": "PASTE_TOKEN_HERE", "db_file": "node-03.db"}
+     "token_env": "THINGSBOARD_NODE_03_TOKEN", "db_file": "node-03.db"}
   ]
 }

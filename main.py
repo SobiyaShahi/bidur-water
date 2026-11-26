@@ -6,9 +6,12 @@ Usage:  python main.py --help
 """
 import argparse
 import json
+import os
 import sys
 import threading
 import time
+
+from dotenv import load_dotenv
 
 from src.logutil import log, setup_file_log
 from src.models import WaterModel
@@ -42,6 +45,23 @@ def dry_run(models, interval, stop):
         stop.wait(interval)
 
 
+def load_node_tokens(nodes):
+    """Load each node token from its configured environment variable."""
+    load_dotenv(dotenv_path=".env")
+    for node in nodes:
+        if "token" in node:
+            raise ValueError(
+                f"Node {node['id']} contains a static token; replace it with a token_env setting."
+            )
+        env_name = node.get("token_env")
+        if not env_name:
+            raise ValueError(f"Node {node['id']} must define token_env in the node config.")
+        token = os.getenv(env_name)
+        if not token:
+            raise ValueError(f"Missing {env_name}; set it in .env or the process environment.")
+        node["token"] = token
+
+
 def main():
     """Load config and scenario, build models, start scenario control and the nodes."""
     a = parse_args()
@@ -58,6 +78,7 @@ def main():
         threading.Thread(target=dry_run, args=(models, sc["sample_interval_s"], stop), daemon=True).start()
         status = lambda: [log(n, "STATUS", f"severity={m.severity:.2f}") for n, m in models.items()]
     else:
+        load_node_tokens(cfg["nodes"])
         try:
             from src.node import Node   # Ritik's module, see docs/INTERFACES.md
         except ImportError:

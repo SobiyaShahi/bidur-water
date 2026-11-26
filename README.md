@@ -7,7 +7,12 @@ Python 3.10+.
     python -m venv .venv
     (Windows) .venv\Scripts\activate    (macOS/Linux) source .venv/bin/activate
     pip install -r requirements.txt
-    copy config/nodes.example.json to config/nodes.json and paste the device tokens
+    copy config/nodes.example.json config/nodes.json
+    copy .env.example .env
+
+Put each ThingsBoard device token in the matching variable in `.env`. Keep the
+tokens out of `config/nodes.json`; its `token_env` entries identify which
+environment variable supplies each node's token. `.env` is ignored by Git.
 
 ## Run
     python main.py --help

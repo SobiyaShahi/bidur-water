@@ -1,32 +1,32 @@
-# Interfaces
+# Interfaces (agreed Sobiya + Ritik). Owner changes it, tells the partner same day.
 
-## Scenario runner
+## Reading (what goes in SQLite payload and to ThingsBoard)
+{"ts": <epoch ms, 13 digits>, "values": {ph, turbidity_ntu, tds_ppm, water_temp_c,
+ flow_lpm, latitude, longitude, rssi_dbm, buffer_depth, seq}}
+Batch = array of readings, oldest first.
+- Model returns ts + values (ph, turbidity_ntu, tds_ppm, water_temp_c, flow_lpm, latitude,
+  longitude) + top-level "severity" (0..1, NOT sent to cloud).
+- Node adds rssi_dbm, buffer_depth, seq before insert().
 
-`main.py` accepts a JSON scenario and writes CSV with the columns
-`step,time_seconds,level_liters`. The model is deterministic and has no
-hardware or network side effects.
+## Model (src/models.py, Sobiya)
+WaterModel(node_cfg, time_scale, start_hour)
+.step(now_ms) -> reading dict       .post_event(event) -> bool       .severity
 
-## Node integration handoff
+## Buffer (src/buffer.py, Ritik)
+insert(reading), oldest_pending(n), mark_synced(ids), depth(), enforce_capacity()
 
-Ritik's `src/node.py` implementation should expose a node that can:
+## Link (src/mqtt_link.py, Ritik)
+connect(), publish_batch(rows) -> True/False, block(), unblock()
 
-- read a node configuration and obtain secrets only from environment variables;
-- produce timestamped numeric telemetry;
-- send telemetry through the transport abstraction;
-- tolerate transient transport failures without losing buffered samples.
+## Node (src/node.py, Ritik)  -- used by main.py
+Node(node_cfg, model, cfg, sample_interval_s)  .start()  .stop()  .link  .status() -> str
 
-`src/buffer.py` owns bounded buffering policy. `src/mqtt_link.py` owns MQTT
-connection and publish behavior. Keep the simulation model independent of
-these runtime integrations.
+## Events: {"type": "rain_event", "node": "node-01", "peak_ntu": 600}
+types: rain_event (peak_ntu, tau_min?), supply_interruption (duration_s),
+network_outage (duration_s? auto-restores), network_restore. node may be "all".
 
-## ThingsBoard handoff
+## Log line
+2026-11-19T10:02:14.120Z [node-01] [ONLINE ] message     (use src/logutil.log)
+tags: ONLINE OFFLINE STATE REPLAY EVENT WARN ERROR EVICT AUTH
 
-The example node configuration names environment variables, not credentials.
-The expected telemetry key for the demo is `tank_level`; the integration
-should agree with the ThingsBoard device profile before publishing.
-
-## SQL handoff
-
-The `sql/` directory is reserved for Ritik's schema and migration scripts.
-Document timestamp units, device identity, and telemetry units alongside the
-schema when it is added.
+## Config: config/nodes.json  {"host","port","nodes":[{id,name,latitude,longitude,token,db_file}]}
